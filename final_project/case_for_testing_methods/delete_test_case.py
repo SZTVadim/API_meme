@@ -1,8 +1,12 @@
 from final_project.Endpoints.create_meth import CreateMeme
 from final_project.Endpoints.delete_meth import DeleteMeme
 from final_project.Endpoints.get_meth import GetMeme
+import allure
 
 
+@allure.title('Удаление мема')
+@allure.feature('object manipulation')
+@allure.story('deleting an object')
 def delete_testing(token=None):
     obj = CreateMeme()
     get_obj = GetMeme()

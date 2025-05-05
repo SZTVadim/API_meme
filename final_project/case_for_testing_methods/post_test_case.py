@@ -1,7 +1,11 @@
 from final_project.Endpoints.create_meth import CreateMeme
 from final_project.Endpoints.delete_meth import DeleteMeme
+import allure
 
 
+@allure.title('Создание мема')
+@allure.feature('object manipulation')
+@allure.story('creating an object')
 def post_testing(text=None, tags=None, info=None, token=None, url=None):
     obj = CreateMeme()
     obj.create_meme(text, tags, info, token, url)  # Позитивный кейс

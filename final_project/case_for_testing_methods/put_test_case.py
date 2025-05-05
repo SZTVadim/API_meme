@@ -1,8 +1,12 @@
 from final_project.Endpoints.create_meth import CreateMeme
 from final_project.Endpoints.delete_meth import DeleteMeme
 from final_project.Endpoints.put_meth import UpdateMeme
+import allure
 
 
+@allure.title('Обновление мема')
+@allure.feature('object manipulation')
+@allure.story('full changing an object')
 def put_testing(text, tags, info, token, url):
     obj = CreateMeme()
     upd_obj = UpdateMeme()
