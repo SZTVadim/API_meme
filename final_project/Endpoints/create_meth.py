@@ -1,7 +1,9 @@
 from final_project.Endpoints.endpoint import Endpoint
+import allure
 
 
 class CreateMeme(Endpoint):
+    @allure.step('Создание мема')
     def create_meme(self, text=None, tags=None, info=None, token=None, url=None):
         body = {"text": text, "url": url, "tags": tags, "info": info}
         self.response = self.send_request(method='post', body=body, token=token, url=f'{self.url_req}/meme')

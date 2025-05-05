@@ -1,4 +1,5 @@
 import requests
+import allure
 
 
 class Endpoint:
@@ -12,6 +13,7 @@ class Endpoint:
     response_without_auth = None
     new_body = None
 
+    @allure.step('удаление из "body" определенного парамера')
     def delete_params(self, method, param, token):
         if token:
             body = self.side_body.copy()
@@ -28,6 +30,8 @@ class Endpoint:
                                               token=None,
                                               body=body)
 
+    @allure.step('заменить в "body" определенный парамер на заданное значение ')
+    @allure.step('Полное обновление мема')
     def replace_body_parameter(self, method, param, value, token, id_meme):
         url = self.get_url(method)
         self.side_body[param] = value
@@ -52,10 +56,12 @@ class Endpoint:
         url = f"{self.url_req}/meme/{self.meme_id}" if method.lower() in ["put"] else f'{self.url_req}/meme'
         return url
 
+    @allure.step('проверка статус кода ответа')
     def assert_status_code(self, status_code):
         assert self.response.status_code == status_code, ("The status code does not match the expected one"
                                                           f" your status code: {self.response.status_code}")
 
+    @allure.step('проверка валидности параметра и его значения')
     def assert_any_param(self, param, value):
         assert self.response_json[param] == value, (f"The '{param}' of the meme does not match the expected one"
                                                     f" your '{param}': {self.response_json[param]}")

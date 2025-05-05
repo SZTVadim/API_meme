@@ -1,4 +1,5 @@
 import os
+import allure
 
 this_file = os.path.dirname(__file__)
 file_path = os.path.join(os.path.dirname(this_file), ".env")
@@ -18,11 +19,13 @@ def check_in_dotenv(key):
         return None
 
 
+@allure.step('Добавление актуального токена в файл .env')
 def add_in_dotenv(token):
     with open(file_path, "a") as file:
         file.write(f"TOKEN={token}\n")
 
 
+@allure.step('удаление протухшего токена из файла .env')
 def delete_from_dotenv(key):
     lines = open_file('r')
     with open(file_path, 'w') as write_file:

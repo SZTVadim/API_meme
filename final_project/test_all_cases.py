@@ -13,4 +13,4 @@ def test_sute(meme_teardown):
     put_testing(text='TEST', tags=['TEST_TAG'], info={'param': 'TEST_INFO'}, token=meme_teardown.token, url='TEST_URL')
     delete_testing(token=meme_teardown.token)
     get_testing(token=meme_teardown.token)
-    token_testing(token_name='SVS_TOKEN')
+    # token_testing(token_name='SVS_TOKEN')

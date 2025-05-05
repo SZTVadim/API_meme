@@ -1,7 +1,11 @@
 from final_project.Endpoints.token_authorize import TokenAuthorize
 from final_project.helpers.helpers import delete_from_dotenv
+import allure
 
 
+@allure.title('Создание токена авторизации')
+@allure.feature('object authorization')
+@allure.story('authorization')
 def token_testing(token_name):
     obj = TokenAuthorize()
     obj.new_token(token_name)  # создание токена, валидный кейс
