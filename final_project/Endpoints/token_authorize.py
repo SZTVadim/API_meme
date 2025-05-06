@@ -1,4 +1,4 @@
-from final_project.helpers.helpers import check_in_dotenv, delete_from_dotenv, add_in_dotenv
+from final_project.helpers.helpers import check_in_dotenv, delete_last_from_dotenv, add_in_dotenv
 from final_project.Endpoints.endpoint import Endpoint
 import allure
 
@@ -34,7 +34,7 @@ class TokenAuthorize(Endpoint):
                     self.token = token
                     need_new_token = False
                 case _:
-                    delete_from_dotenv(key_token)
+                    delete_last_from_dotenv(key_token)
                     need_new_token = True
         else:
             need_new_token = True

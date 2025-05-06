@@ -1,16 +1,304 @@
 import pytest
-from final_project.case_for_testing_methods.post_test_case import post_testing
-from final_project.case_for_testing_methods.put_test_case import put_testing
-from final_project.case_for_testing_methods.delete_test_case import delete_testing
-from final_project.case_for_testing_methods.get_test_case import get_testing
-from final_project.case_for_testing_methods.token_test_case import token_testing
-from final_project.conftest import meme_teardown
+import allure
+from final_project.helpers.helpers import TEST_DATA as data, DATA_UPDATE as upd, delete_last_from_dotenv
 
 
-@pytest.mark.parametrize("meme_teardown", [("SVS_Token", "TOKEN")], indirect=True)
-def test_sute(meme_teardown):
-    post_testing(text='Test', tags=['test_tag'], info={'info': 'test_info'}, token=meme_teardown.token, url='test_url')
-    put_testing(text='TEST', tags=['TEST_TAG'], info={'param': 'TEST_INFO'}, token=meme_teardown.token, url='TEST_URL')
-    delete_testing(token=meme_teardown.token)
-    get_testing(token=meme_teardown.token)
-    # token_testing(token_name='SVS_TOKEN')
+@pytest.mark.parametrize("only_token", [("SVS_Token", "TOKEN")], indirect=True)
+@allure.title('Создание мема')
+@allure.feature('object manipulation')
+@allure.story('creating an object')
+def test_post(only_token, create_meme, delete_meme):
+    create_meme.new_meme(text=data['text'], tags=data['tags'], info=data['info'], token=only_token,
+                         url=data['url'])  # Позитивный кейс
+    create_meme.assert_any_param(param='text', value=data['text'])
+    create_meme.assert_any_param(param='tags', value=data['tags'])
+    create_meme.assert_any_param(param='info', value=data['info'])
+    create_meme.assert_any_param(param='url', value=data['url'])
+    create_meme.assert_status_code(200)
+    delete_meme.deleting_meme(id_meme=create_meme.meme_id, token=only_token)
+    create_meme.new_meme(text='', tags=data['tags'], info=data['info'], token=only_token,
+                         url=data['url'])
+    create_meme.assert_status_code(200)
+    delete_meme.deleting_meme(id_meme=create_meme.meme_id, token=only_token)
+
+    create_meme.new_meme(text='Test', tags=data['tags'], info=data['info'], token='xxx',
+                         url=data['url'])  # без токена авторизации
+    create_meme.assert_status_code(401)
+
+    create_meme.missing_parameter(method='post', param='text', token=only_token)  # без параметра "text"
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=1, tags=data['tags'], info=data['info'], token=only_token,
+                         url=data['url'])  # тип данных "text" int
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=[], tags=data['tags'], info=data['info'], token=only_token,
+                         url=data['url'])  # тип данных "text" list
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text={}, tags=data['tags'], info=data['info'], token=only_token,
+                         url=data['url'])  # тип данных "text" dict
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=None, tags=data['tags'], info=data['info'], token=only_token,
+                         url=data['url'])  # значение параметра "text" None
+    create_meme.assert_status_code(400)
+
+    create_meme.missing_parameter(method='post', param='url', token=only_token)  # без параметра "url"
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=data['text'], tags=data['tags'], info=data['info'], token=only_token,
+                         url='')  # пустое значение "url"
+    create_meme.assert_status_code(200)
+    delete_meme.deleting_meme(id_meme=create_meme.meme_id, token=only_token)
+
+    create_meme.new_meme(text=data['text'], tags=data['tags'], info=data['info'], token=only_token,
+                         url=1)  # тип данных "url" int
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=data['text'], tags=data['tags'], info=data['info'], token=only_token,
+                         url=[])  # тип данных "url" list
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=data['text'], info=data['info'], token=only_token, url={},
+                         tags=data['tags'])  # тип данных "url" dict
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=data['text'], info=data['info'], token=only_token, url=None,
+                         tags=data['tags'])  # значение параметра "url" None
+    create_meme.assert_status_code(400)
+
+    create_meme.missing_parameter(method='post', param='tags', token=only_token)  # без параметра "tags"
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=data['text'], info=data['info'], token=only_token, url=data['url'],
+                         tags=[])  # пустое значение "tags"
+    create_meme.assert_status_code(200)
+    delete_meme.deleting_meme(id_meme=create_meme.meme_id, token=only_token)
+
+    create_meme.new_meme(text=data['text'], info=data['info'], token=only_token, url=data['url'],
+                         tags='tags')  # тип данных "tags" str
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=data['text'], info=data['info'], token=only_token, url=data['url'],
+                         tags=1)  # тип данных "tags" int
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=data['text'], info=data['info'], token=only_token, url=data['url'],
+                         tags={})  # тип данных "tags" dict
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=data['text'], info=data['info'], token=only_token, url=data['url'],
+                         tags=None)  # значение параметра "tags" None
+    create_meme.assert_status_code(400)
+
+    create_meme.missing_parameter(method='post', param='info', token=only_token)  # без параметра "info"
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=data['text'], info={}, token=only_token, url=data['url'],
+                         tags=data['tags'])  # пустое значение "info"
+    create_meme.assert_status_code(200)
+    delete_meme.deleting_meme(id_meme=create_meme.meme_id, token=only_token)
+
+    create_meme.new_meme(text=data['text'], info='info', token=only_token, url=data['url'],
+                         tags=data['tags'])  # тип данных "info" str
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=data['text'], info=1, token=only_token, url=data['url'],
+                         tags=data['tags'])  # тип данных "info" int
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=data['text'], info=[], token=only_token, url=data['url'],
+                         tags=data['tags'])  # тип данных "info" list
+    create_meme.assert_status_code(400)
+
+    create_meme.new_meme(text=data['text'], info=None, token=only_token, url=data['url'],
+                         tags=data['tags'])  # значение параметра "info" None
+    create_meme.assert_status_code(400)
+
+
+@pytest.mark.parametrize("setup_teardown", [("SVS_Token", "TOKEN")], indirect=True)
+@allure.title('Обновление мема')
+@allure.feature('object manipulation')
+@allure.story('full changing an object')
+def test_sute_put(setup_teardown, update_meme):
+    update_meme.updating_meme(id_meme=setup_teardown.meme_id, text=upd['text'], tags=upd['tags'], info=upd['info'],
+                              token=setup_teardown.token, url=upd['url'])  # Позитивный кейс
+    update_meme.assert_any_param(param='id', value=update_meme.meme_id)
+    update_meme.assert_any_param(param='text', value=upd['text'])
+    update_meme.assert_any_param(param='tags', value=upd['tags'])
+    update_meme.assert_any_param(param='info', value=upd['info'])
+    update_meme.assert_any_param(param='url', value=upd['url'])
+    update_meme.assert_status_code(200)
+    update_meme.updating_meme(id_meme=setup_teardown.meme_id, text=upd['text'], tags=data['tags'], info=data['info'],
+                              token="xxx",
+                              url=data['url'])  # без авторизации
+    update_meme.assert_status_code(401)
+
+    update_meme.updating_meme(id_meme='', text=upd['text'], tags=data['tags'], info=data['info'],
+                              token=setup_teardown.token,
+                              url=data['url'])  # тип данных "id" str
+    update_meme.assert_status_code(404)
+
+    update_meme.updating_meme(id_meme=None, text=upd['text'], tags=data['tags'], info=data['info'],
+                              token=setup_teardown.token,
+                              url=data['url'])  # тип данных "id" None
+    update_meme.assert_status_code(404)
+    update_meme.updating_meme(id_meme=setup_teardown.meme_id, text='', tags=data['tags'], info=data['info'],
+                              token=setup_teardown.token,
+                              url=data['url'])  # пустое значение "text"
+    update_meme.assert_status_code(200)
+
+    setup_teardown.missing_parameter(method='put', param='text', token=setup_teardown.token)  # без параметра "text"
+    setup_teardown.assert_status_code(400)
+
+    update_meme.updating_meme(id_meme=setup_teardown.meme_id, text=1, tags=data['tags'], info=data['info'],
+                              token=setup_teardown.token,
+                              url=data['url'])  # тип данных "text" int
+    update_meme.assert_status_code(400)
+
+    update_meme.updating_meme(id_meme=setup_teardown.meme_id, text=[], tags=data['tags'], info=data['info'],
+                              token=setup_teardown.token,
+                              url=data['url'])  # тип данных "text" list
+    update_meme.assert_status_code(400)
+
+    update_meme.updating_meme(id_meme=setup_teardown.meme_id, text={}, tags=data['tags'], info=data['info'],
+                              token=setup_teardown.token,
+                              url=data['url'])  # тип данных "text" dict
+    update_meme.assert_status_code(400)
+
+    update_meme.updating_meme(id_meme=setup_teardown.meme_id, text=None, tags=data['tags'], info=data['info'],
+                              token=setup_teardown.token,
+                              url=data['url'])  # значение "text" None
+    update_meme.assert_status_code(400)
+
+    update_meme.updating_meme(id_meme=setup_teardown.meme_id, text=upd['text'], tags=data['tags'], info=data['info'],
+                              token=setup_teardown.token,
+                              url='')  # пустое значение "url"
+    update_meme.assert_status_code(200)
+
+    setup_teardown.missing_parameter(method='put', param='url', token=setup_teardown.token)  # без параметра "url"
+    setup_teardown.assert_status_code(400)
+
+    update_meme.updating_meme(id_meme=setup_teardown.meme_id, text=upd['text'], tags=data['tags'], info=data['info'],
+                              token=setup_teardown.token,
+                              url=1)  # тип данных "url" int
+    update_meme.assert_status_code(400)
+
+    update_meme.updating_meme(id_meme=setup_teardown.meme_id, text=upd['text'], tags=data['tags'], info=data['info'],
+                              token=setup_teardown.token,
+                              url=['url'])  # тип данных "url" list
+    update_meme.assert_status_code(400)
+
+    update_meme.updating_meme(id_meme=setup_teardown.meme_id, text=upd['text'], tags=data['tags'], info=data['info'],
+                              token=setup_teardown.token,
+                              url={1: 1})  # тип данных "url" dict
+    update_meme.assert_status_code(400)
+
+    update_meme.updating_meme(id_meme=setup_teardown.meme_id, text=upd['text'], tags=data['tags'], info=data['info'],
+                              token=setup_teardown.token,
+                              url=None)  # значение "url" None
+    update_meme.assert_status_code(400)
+
+    update_meme.updating_meme(id_meme=setup_teardown.meme_id, text=upd['text'], tags=[], info=data['info'],
+                              token=setup_teardown.token,
+                              url=data['url'])  # пустое значение "tags"
+    update_meme.assert_status_code(200)
+
+    setup_teardown.missing_parameter(method='put', param='tags', token=setup_teardown.token)  # без параметра "tags"
+    setup_teardown.assert_status_code(400)
+
+    update_meme.replace_body_parameter(method='put', param='tags', value='str', token=setup_teardown.token,
+                                       id_meme=setup_teardown.meme_id)  # тип данных "tags" str
+    update_meme.assert_status_code(400)
+
+    update_meme.replace_body_parameter(method='put', param='tags', value=13, token=setup_teardown.token,
+                                       id_meme=setup_teardown.meme_id)  # тип данных "tags" int
+    update_meme.assert_status_code(400)
+
+    update_meme.replace_body_parameter(method='put', param='tags', value={'param': 'tags'}, token=setup_teardown.token,
+                                       id_meme=setup_teardown.meme_id)  # тип данных "tags" dict
+    update_meme.assert_status_code(400)
+
+    update_meme.replace_body_parameter(method='put', param='tags', value=None, token=setup_teardown.token,
+                                       id_meme=setup_teardown.meme_id)  # значение "tags" None
+    update_meme.assert_status_code(400)
+
+    update_meme.updating_meme(id_meme=setup_teardown.meme_id, text=upd['text'], tags=data['tags'], info='',
+                              token=setup_teardown.token,
+                              url=data['url'])  # пустое значение "info"
+    update_meme.assert_status_code(400)
+
+    setup_teardown.missing_parameter(method='put', param='info', token=setup_teardown.token)  # без параметра "info"
+    setup_teardown.assert_status_code(400)
+
+    update_meme.replace_body_parameter(method='put', param='info', value='str', token=setup_teardown.token,
+                                       id_meme=setup_teardown.meme_id)  # пустое значение "info" str
+    update_meme.assert_status_code(400)
+
+    update_meme.replace_body_parameter(method='put', param='info', value=13, token=setup_teardown.token,
+                                       id_meme=setup_teardown.meme_id)  # тип данных "info" int
+    update_meme.assert_status_code(400)
+
+    update_meme.replace_body_parameter(method='put', param='info', value=['list'], token=setup_teardown.token,
+                                       id_meme=setup_teardown.meme_id)  # тип данных "info" list
+    update_meme.assert_status_code(400)
+
+    update_meme.replace_body_parameter(method='put', param='info', value=None, token=setup_teardown.token,
+                                       id_meme=setup_teardown.meme_id)  # значение "info" None
+    update_meme.assert_status_code(400)
+
+
+@allure.title('Получение мема')
+@allure.feature('getting information')
+@allure.story('get an object')
+@pytest.mark.parametrize("setup_teardown", [("SVS_Token", "TOKEN")], indirect=True)
+def test_sute_get(setup_teardown, get_meme):
+    get_meme.get_all_meme(token=setup_teardown.token)  # позитивный кейс, все мемы
+    get_meme.assert_status_code(200)
+    get_meme.assert_get_all()
+
+    get_meme.get_one_meme(id_meme=setup_teardown.meme_id, token=setup_teardown.token)
+    get_meme.assert_status_code(200)
+    get_meme.assert_any_param(param='id', value=setup_teardown.meme_id)
+    get_meme.get_one_meme(id_meme=setup_teardown.meme_id, token='xxx')
+    get_meme.assert_status_code(401)
+
+
+@pytest.mark.parametrize("token_create_meme", [("SVS_Token", "TOKEN")], indirect=True)
+def test_sute_delete(token_create_meme, delete_meme, get_meme):
+    delete_meme.deleting_meme(id_meme=token_create_meme.meme_id, token=token_create_meme.token)  # позитивный кейс
+    delete_meme.assert_status_code(200)
+    delete_meme.deleting_meme(id_meme=token_create_meme.meme_id, token='xxx')  # Удаление без авторизации
+    delete_meme.assert_status_code(401)
+    get_meme.get_one_meme(id_meme=token_create_meme.meme_id, token=token_create_meme.token)
+    get_meme.assert_status_code(404)  # проверяем 404 статус при запросе удаленного мема
+
+
+@allure.title('Создание токена авторизации')
+@allure.feature('object authorization')
+@allure.story('authorization')
+def test_sute_toket(token_auth):
+    token_auth.new_token('SVS_TOKEN')  # создание токена, валидный кейс
+    token_auth.assert_status_code(200)
+    token_auth.assert_any_param(param='user', value='SVS_TOKEN')
+
+    token_auth.validate_token(token_auth.token)  # проверка, работает ли токен
+    token_auth.assert_status_code(200)
+
+    token_auth.new_token(name=1)  # создание токена с типом данных 'name' int
+    token_auth.assert_status_code(400)
+
+    token_auth.new_token(name=[])  # создание токена с типом данных 'name' list
+    token_auth.assert_status_code(400)
+
+    token_auth.new_token(name={})  # создание токена с типом данных 'name' dict
+    token_auth.assert_status_code(400)
+
+    token_auth.new_token(name=None)  # создание токена с типом данных 'name' None
+    token_auth.assert_status_code(400)
+
+    token_auth.missing_parameter(method='post', param='name', token=None)  # создание токена без 'name'
+    token_auth.assert_status_code(400)
+
+    delete_last_from_dotenv('TOKEN')  # удаление тесового токена из файла .env

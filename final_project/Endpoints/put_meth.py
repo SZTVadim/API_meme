@@ -4,7 +4,7 @@ import allure
 
 class UpdateMeme(Endpoint):
     @allure.step('Полное обновление мема')
-    def update_meme(self, id_meme=None, text=None, tags=None, info=None, token=None, url=None):
+    def updating_meme(self, id_meme=None, text=None, tags=None, info=None, token=None, url=None):
         body = {"id": id_meme, "text": text, "url": url, "tags": tags, "info": info}
         self.response = self.send_request(method='put', url=f"{self.url_req}/meme/{id_meme}", body=body, token=token)
         if self.response.status_code == 200:
