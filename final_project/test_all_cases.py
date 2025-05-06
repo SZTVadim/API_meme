@@ -264,7 +264,9 @@ def test_sute_get(setup_teardown, get_meme):
     get_meme.get_one_meme(id_meme=setup_teardown.meme_id, token='xxx')
     get_meme.assert_status_code(401)
 
-
+@allure.title('Удаление мема')
+@allure.feature('object manipulation')
+@allure.story('deleting an object')
 @pytest.mark.parametrize("token_create_meme", [("SVS_Token", "TOKEN")], indirect=True)
 def test_sute_delete(token_create_meme, delete_meme, get_meme):
     delete_meme.deleting_meme(id_meme=token_create_meme.meme_id, token=token_create_meme.token)  # позитивный кейс
