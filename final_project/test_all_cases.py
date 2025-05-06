@@ -3,10 +3,10 @@ import allure
 from final_project.helpers.helpers import TEST_DATA as data, DATA_UPDATE as upd, delete_last_from_dotenv
 
 
-@pytest.mark.parametrize("only_token", [("SVS_Token", "TOKEN")], indirect=True)
 @allure.title('Создание мема')
 @allure.feature('object manipulation')
 @allure.story('creating an object')
+@pytest.mark.parametrize("only_token", [("SVS_Token", "TOKEN")], indirect=True)
 def test_post(only_token, create_meme, delete_meme):
     create_meme.new_meme(text=data['text'], tags=data['tags'], info=data['info'], token=only_token,
                          url=data['url'])  # Позитивный кейс
@@ -117,10 +117,10 @@ def test_post(only_token, create_meme, delete_meme):
     create_meme.assert_status_code(400)
 
 
-@pytest.mark.parametrize("setup_teardown", [("SVS_Token", "TOKEN")], indirect=True)
 @allure.title('Обновление мема')
 @allure.feature('object manipulation')
 @allure.story('full changing an object')
+@pytest.mark.parametrize("setup_teardown", [("SVS_Token", "TOKEN")], indirect=True)
 def test_sute_put(setup_teardown, update_meme):
     update_meme.updating_meme(id_meme=setup_teardown.meme_id, text=upd['text'], tags=upd['tags'], info=upd['info'],
                               token=setup_teardown.token, url=upd['url'])  # Позитивный кейс
@@ -264,7 +264,9 @@ def test_sute_get(setup_teardown, get_meme):
     get_meme.get_one_meme(id_meme=setup_teardown.meme_id, token='xxx')
     get_meme.assert_status_code(401)
 
-
+@allure.title('Удаление мема')
+@allure.feature('object manipulation')
+@allure.story('deleting an object')
 @pytest.mark.parametrize("token_create_meme", [("SVS_Token", "TOKEN")], indirect=True)
 def test_sute_delete(token_create_meme, delete_meme, get_meme):
     delete_meme.deleting_meme(id_meme=token_create_meme.meme_id, token=token_create_meme.token)  # позитивный кейс
