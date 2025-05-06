@@ -14,7 +14,7 @@ class Endpoint:
     new_body = None
 
     @allure.step('удаление из "body" определенного парамера')
-    def delete_params(self, method, param, token):
+    def missing_parameter(self, method, param, token):  # для запросос, где необходимо удалить параметр
         if token:
             body = self.side_body.copy()
             del body[param]
@@ -32,7 +32,8 @@ class Endpoint:
 
     @allure.step('заменить в "body" определенный парамер на заданное значение ')
     @allure.step('Полное обновление мема')
-    def replace_body_parameter(self, method, param, value, token, id_meme):
+    def replace_body_parameter(self, method, param, value, token,
+                               id_meme):  # для запросов, где необходимо заменить тип данных у параметра
         url = self.get_url(method)
         self.side_body[param] = value
         if method.lower() in ["put"]:
@@ -45,14 +46,14 @@ class Endpoint:
         token_for_header = token if token else self.token
         return {"Authorization": token_for_header}
 
-    def send_request(self, method, url, body, token=None, name=None):
+    def send_request(self, method, url, body, token=None, name=None):  # метод для отправки универсального запроса
         if name:
             return requests.request(method=method, url=url, json=body)
         else:
             header = self.prepare_token(token)
             return requests.request(method=method, url=url, headers=header, json=body)
 
-    def get_url(self, method):
+    def get_url(self, method):  # метод для  получения универсального значения "url"
         url = f"{self.url_req}/meme/{self.meme_id}" if method.lower() in ["put"] else f'{self.url_req}/meme'
         return url
 
@@ -64,4 +65,4 @@ class Endpoint:
     @allure.step('проверка валидности параметра и его значения')
     def assert_any_param(self, param, value):
         assert self.response_json[param] == value, (f"The '{param}' of the meme does not match the expected one"
-                                                    f" your '{param}': {self.response_json[param]}")
+                                                    f" your value: '{value}': {self.response_json[param]}")
