@@ -17,6 +17,6 @@ class GetMeme(Endpoint):
             self.response_json = self.response.json()
         return self.response
 
-    @allure.step('Проверка, что в ответе больше одного объекта')
+    @allure.step('Проверка, что в ответе больше одного элемента')
     def assert_get_all(self):
         assert len(self.response_json['data']) > 0

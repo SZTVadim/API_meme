@@ -11,7 +11,7 @@ class Endpoint:
     meme_id = None
     response_json = None
     response_without_auth = None
-    new_body = None
+    body = None
 
     @allure.step('удаление из "body" определенного парамера')
     def missing_parameter(self, method, param, token):  # для запросос, где необходимо удалить параметр
@@ -33,7 +33,7 @@ class Endpoint:
     @allure.step('заменить в "body" определенный парамер на заданное значение ')
     @allure.step('Полное обновление мема')
     def replace_body_parameter(self, method, param, value, token,
-                               id_meme):  # для запросов, где необходимо заменить тип данных у параметра
+                               id_meme=None):  # для запросов, где необходимо заменить тип данных у параметра
         url = self.get_url(method)
         self.side_body[param] = value
         if method.lower() in ["put"]:
@@ -64,5 +64,15 @@ class Endpoint:
 
     @allure.step('проверка валидности параметра и его значения')
     def assert_any_param(self, param, value):
-        assert self.response_json[param] == value, (f"The '{param}' of the meme does not match the expected one"
-                                                    f" your value: '{value}': {self.response_json[param]}")
+        match param:
+            case 'info':
+                assert self.response_json[param]['discription'] == value, (
+                    f"The '{param}' of the meme does not match the expected one"
+                    f" your value: '{value}': {self.response_json[param]}")
+            case 'tags':
+                assert self.response_json[param][0] == value, (
+                    f"The '{param}' of the meme does not match the expected one"
+                    f" your value: '{value}': {self.response_json[param]}")
+            case _:
+                assert self.response_json[param] == value, (f"The '{param}' of the meme does not match the expected one"
+                                                            f" your value: '{value}': {self.response_json[param]}")

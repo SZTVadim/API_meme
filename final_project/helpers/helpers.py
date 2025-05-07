@@ -5,7 +5,6 @@ this_file = os.path.dirname(__file__)
 file_path = os.path.join(os.path.dirname(this_file), ".env")
 
 TEST_DATA = {'text': 'Test', 'tags': ['test_tag'], 'info': {'info': 'test_info'}, 'url': 'test_url'}
-DATA_UPDATE = {'text': 'TEST', 'tags': ['TEST_TAG'], 'info': {'info': 'TEST_INFO'}, 'url': 'TEST_URL'}
 
 
 def open_file(type_opening):  # открываем файл, где должен храниться токен

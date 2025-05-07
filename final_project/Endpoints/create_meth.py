@@ -5,7 +5,7 @@ import allure
 class CreateMeme(Endpoint):
     @allure.step('Создание мема')
     def new_meme(self, text=None, tags=None, info=None, token=None, url=None):
-        body = {"text": text, "url": url, "tags": tags, "info": info}
+        body = {"text": text, "url": url, "tags": [tags], "info": {'discription': info}}
         self.response = self.send_request(method='post', body=body, token=token, url=f'{self.url_req}/meme')
         if self.response.status_code == 200:
             self.response_json = self.response.json()
