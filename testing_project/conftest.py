@@ -18,20 +18,9 @@ def token(request):
 @pytest.fixture()
 def meme_id(create_meme, token, delete_meme):
     create_meme.new_meme(text=data['text'], tags=data['tags'], info=data['info'], token=token,
-                 url=create_meme.url_req)
+                         url=create_meme.url_req)
     yield create_meme.meme_id
     delete_meme.deleting_meme(id_meme=create_meme.meme_id, token=token)
-
-
-
-
-# @pytest.fixture()
-# def setup_teardown(create_meme, delete_meme, token):
-#     create_meme.new_meme(text=data['text'], tags=data['tags'], info=data['info'], token=token,
-#                  url=create_meme.url_req)
-#     yield create_meme.meme_id
-#     delete_meme.deleting_meme(id_meme=create_meme.meme_id,
-#                               token=token)
 
 
 @pytest.fixture()
