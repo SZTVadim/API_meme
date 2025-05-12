@@ -1,5 +1,5 @@
-from final_project.helpers.helpers import check_in_dotenv, delete_last_from_dotenv, add_in_dotenv
-from final_project.Endpoints.endpoint import Endpoint
+from testing_project.helpers.helper_file import check_in_dotenv, delete_last_from_dotenv, add_in_dotenv
+from testing_project.endpoints.endpoint import Endpoint
 import allure
 
 
