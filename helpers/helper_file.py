@@ -4,7 +4,7 @@ import allure
 this_file = os.path.dirname(__file__)
 file_path = os.path.join(os.path.dirname(this_file), ".env")
 
-TEST_DATA = {'text': 'Test', 'tags': ['test_tag'], 'info': {'info': 'test_info'}, 'url': 'test_url'}
+TEST_DATA = {'text': 'test', 'tags': ['test_tag'], 'info': {'info': 'test_info'}, 'url': 'test_url'}
 
 
 def open_file(type_opening):  # открываем файл, где должен храниться токен

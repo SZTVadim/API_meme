@@ -1,10 +1,10 @@
-from testing_project.helpers.helper_file import check_in_dotenv, delete_last_from_dotenv, add_in_dotenv
-from testing_project.endpoints.endpoint import Endpoint
+from helpers.helper_file import check_in_dotenv, delete_last_from_dotenv, add_in_dotenv
+from endpoints.endpoint import Endpoint
 import allure
 
 
 class TokenAuthorize(Endpoint):
-    @allure.step('Создание токена вторизации')
+    @allure.step('Создание токена aвторизации')
     def new_token(self, name):
         self.response = self.send_request(method='post', url=f"{self.url_req}/authorize", body={"name": name},
                                           token=None)

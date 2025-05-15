@@ -1,4 +1,4 @@
-from testing_project.endpoints.endpoint import Endpoint
+from endpoints.endpoint import Endpoint
 import allure
 
 

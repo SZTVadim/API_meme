@@ -14,13 +14,13 @@ class Endpoint:
     body = None
 
     @allure.step('удаление из "body" определенного парамера')
-    def missing_parameter(self, method, param, token):  # для запросос, где необходимо удалить параметр
+    def missing_parameter(self, method, param, token, meme_id=None):  # для запросос, где необходимо удалить параметр
         if token:
             body = self.side_body.copy()
             del body[param]
             if method.lower() in ["put"]:
-                body['id'] = self.meme_id
-            self.response = self.send_request(method=method, url=self.get_url(method),
+                body['id'] = meme_id
+            self.response = self.send_request(method=method, url=self.get_url(method, meme_id),
                                               token=token,
                                               body=body)
         else:
@@ -34,7 +34,7 @@ class Endpoint:
     @allure.step('Полное обновление мема')
     def replace_body_parameter(self, method, param, value, token,
                                id_meme=None):  # для запросов, где необходимо заменить тип данных у параметра
-        url = self.get_url(method)
+        url = self.get_url(method, id_meme)
         self.side_body[param] = value
         if method.lower() in ["put"]:
             self.side_body['id'] = id_meme
@@ -53,8 +53,8 @@ class Endpoint:
             header = self.prepare_token(token)
             return requests.request(method=method, url=url, headers=header, json=body)
 
-    def get_url(self, method):  # метод для  получения универсального значения "url"
-        url = f"{self.url_req}/meme/{self.meme_id}" if method.lower() in ["put"] else f'{self.url_req}/meme'
+    def get_url(self, method, meme_id=None):  # метод для  получения универсального значения "url"
+        url = f"{self.url_req}/meme/{meme_id}" if method.lower() in ["put"] else f'{self.url_req}/meme'
         return url
 
     @allure.step('проверка статус кода ответа')
