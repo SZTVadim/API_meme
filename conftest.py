@@ -21,7 +21,7 @@ def meme_id(token, create_meme, delete_meme):
     obj.setup_meme(text=data['text'], tags=data['tags'], info=data['info'], token=token, url=create_meme.url_req)
     yield obj.meme_id
     if obj.meme_id:
-        delete_meme.deleting_meme(id_meme=create_meme.meme_id, token=token)
+        delete_meme.deleting_without_step(id_meme=create_meme.meme_id, token=token)
 
 
 @pytest.fixture()

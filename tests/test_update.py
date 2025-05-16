@@ -12,34 +12,10 @@ def test_updating(meme_id, update_meme, token):
     update_meme.updating_meme(id_meme=meme_id, text='TEXT', tags='TAGS', info='INFO',
                               token=token, url='URL')  # Позитивный кейс
     update_meme.assert_status_code(200)
-
-
-@pytest.mark.parametrize("token", [("SVS_Token", "TOKEN")], indirect=True)
-def test_check_text(meme_id, update_meme, token):
-    update_meme.updating_meme(id_meme=meme_id, text='TEXT', tags='TAGS', info='INFO',
-                              token=token, url='URL')  # Проверка параметра text
-    update_meme.assert_any_param(param='text', value='TEXT')
-
-
-@pytest.mark.parametrize("token", [("SVS_Token", "TOKEN")], indirect=True)
-def test_check_tags(meme_id, update_meme, token):
-    update_meme.updating_meme(id_meme=meme_id, text='TEXT', tags='TAGS', info='INFO',
-                              token=token, url='URL')  # Проверка параметра tags
-    update_meme.assert_any_param(param='tags', value='TAGS')
-
-
-@pytest.mark.parametrize("token", [("SVS_Token", "TOKEN")], indirect=True)
-def test_check_info(meme_id, update_meme, token):
-    update_meme.updating_meme(id_meme=meme_id, text='TEXT', tags='TAGS', info='INFO',
-                              token=token, url='URL')  # Проверка параметра info
-    update_meme.assert_any_param(param='info', value='INFO')
-
-
-@pytest.mark.parametrize("token", [("SVS_Token", "TOKEN")], indirect=True)
-def test_check_url(meme_id, update_meme, token):
-    update_meme.updating_meme(id_meme=meme_id, text='TEXT', tags='TAGS', info='INFO',
-                              token=token, url='URL')  # Проверка параметра url
-    update_meme.assert_any_param(param='url', value='URL')
+    update_meme.assert_any_param(param='text', value='TEXT')  # Проверка параметра text
+    update_meme.assert_any_param(param='tags', value='TAGS')  # Проверка параметра tags
+    update_meme.assert_any_param(param='info', value='INFO')  # Проверка параметра info
+    update_meme.assert_any_param(param='url', value='URL')  # Проверка параметра url
 
 
 @pytest.mark.parametrize("token", [("SVS_Token", "TOKEN")], indirect=True)
@@ -69,6 +45,7 @@ def test_text_is_empty(meme_id, update_meme, token):
     update_meme.updating_meme(id_meme=meme_id, text='', tags='TAGS', info='INFO',
                               token=token, url='URL')  # пустое значение "text"
     update_meme.assert_status_code(200)
+    update_meme.assert_any_param(param='text', value='')
 
 
 @pytest.mark.parametrize("token", [("SVS_Token", "TOKEN")], indirect=True)
@@ -110,6 +87,7 @@ def test_url_is_empty(meme_id, update_meme, token):
     update_meme.updating_meme(id_meme=meme_id, text='TEXT', tags='TAGS', info='INFO',
                               token=token, url='')  # пустое значение "url"
     update_meme.assert_status_code(200)
+    update_meme.assert_any_param(param='url', value='')
 
 
 @pytest.mark.parametrize("token", [("SVS_Token", "TOKEN")], indirect=True)
@@ -151,7 +129,7 @@ def test_tags_is_empty(meme_id, update_meme, token):
     update_meme.updating_meme(id_meme=meme_id, text='TEXT', tags='', info='INFO',
                               token=token, url='URL')  # пустое значение "tags"
     update_meme.assert_status_code(200)
-
+    update_meme.assert_any_param(param='tags', value='')
 
 @pytest.mark.parametrize("token", [("SVS_Token", "TOKEN")], indirect=True)
 def test_without_param_tags(update_meme, token, meme_id):
@@ -192,6 +170,7 @@ def test_info_is_empty(meme_id, update_meme, token):
     update_meme.updating_meme(id_meme=meme_id, text='TEXT', tags='TAGS', info='',
                               token=token, url='URL')  # пустое значение "info"
     update_meme.assert_status_code(200)
+    update_meme.assert_any_param(param='info',value='')
 
 
 @pytest.mark.parametrize("token", [("SVS_Token", "TOKEN")], indirect=True)

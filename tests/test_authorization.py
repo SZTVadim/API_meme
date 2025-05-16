@@ -36,7 +36,3 @@ def test_create_token_with_none_name(is_token):
 def test_create_token_without_name(is_token):
     is_token.missing_parameter(method='post', param='name', token=None)  # создание токена без 'name'
     is_token.assert_status_code(400)
-
-
-def test_deleting_token(is_token):
-    delete_last_from_dotenv('TOKEN')  # удаление тесового токена из файла .env

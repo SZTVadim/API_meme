@@ -68,11 +68,11 @@ class Endpoint:
             case 'info':
                 assert self.response_json[param]['discription'] == value, (
                     f"The '{param}' of the meme does not match the expected one"
-                    f" your value: '{value}': {self.response_json[param]}")
+                    f" your value: {value}: {self.response_json[param]}")
             case 'tags':
                 assert self.response_json[param][0] == value, (
                     f"The '{param}' of the meme does not match the expected one"
-                    f" your value: '{value}': {self.response_json[param]}")
+                    f" your value: {value}: {self.response_json[param]}")
             case _:
                 assert self.response_json[param] == value, (f"The '{param}' of the meme does not match the expected one"
                                                             f" your value: {value}: {self.response_json[param]}")
